@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bibliotekshanteringssystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19c122509a320d39a358714b45e32dd595e84c79")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+73f45e999186ae20ff9d8d9500ff4558f08ab822")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bibliotekshanteringssystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bibliotekshanteringssystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,6 +1,7 @@
 ﻿using LibraryManagement.Data;
 using LibraryManagement.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace LibraryManagement
 {
@@ -20,12 +21,13 @@ namespace LibraryManagement
                 Console.Clear();
                 Console.WriteLine("===== Library Management System =====");
                 Console.WriteLine("1. Register User");
-                Console.WriteLine("2. Login");
-                Console.WriteLine("3. Add Book");
-                Console.WriteLine("4. Borrow Book");
-                Console.WriteLine("5. Return Book");
-                Console.WriteLine("6. Search Books");
-                Console.WriteLine("7. Exit");
+                Console.WriteLine("2. View all the User");
+                Console.WriteLine("3. Login");
+                Console.WriteLine("4. Add Book");
+                Console.WriteLine("5. Borrow Book");
+                Console.WriteLine("6. Return Book");
+                Console.WriteLine("7. Search Books");
+                Console.WriteLine("8. Exit");
                 Console.Write("Choose an option: ");
 
                 var input = Console.ReadLine();
@@ -36,21 +38,24 @@ namespace LibraryManagement
                         RegisterUser();
                         break;
                     case "2":
-                        Login();
+                        ViewUsers();     // ✅ FIXED: call the method
                         break;
                     case "3":
-                        AddBook();
+                        Login();
                         break;
                     case "4":
-                        BorrowBook();
+                        AddBook();
                         break;
                     case "5":
-                        ReturnBook();
+                        BorrowBook();
                         break;
                     case "6":
-                        SearchBooks();
+                        ReturnBook();
                         break;
                     case "7":
+                        SearchBooks();
+                        break;
+                    case "8":
                         return;
                     default:
                         Console.WriteLine("Invalid option. Press any key...");
@@ -77,7 +82,7 @@ namespace LibraryManagement
 
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                Console.WriteLine("Name and Email cannot be empty!");
+                Console.WriteLine("Name, Email and Password cannot be empty!");
                 Console.ReadKey();
                 return;
             }
@@ -95,7 +100,8 @@ namespace LibraryManagement
             var newUser = new User
             {
                 Name = name,
-                Email = email
+                Email = email,
+                Password = password
             };
 
             _context.Users.Add(newUser);
@@ -105,7 +111,52 @@ namespace LibraryManagement
             Console.ReadKey();
         }
 
-        private void Login() { }
+        private void ViewUsers()
+        {
+            Console.Clear();
+            Console.WriteLine("===== Registered Users =====");
+
+            var users = _context.Users.ToList();
+
+            if (users.Count == 0)
+            {
+                Console.WriteLine("No users found.");
+            }
+            else
+            {
+                foreach (var user in users)
+                {
+                    Console.WriteLine($"ID: {user.Id}, Name: {user.Name}, Email: {user.Email}, Password: {user.Password}");
+                    Console.WriteLine("---------------------------");
+                }
+            }
+
+            Console.WriteLine("Press ENTER to continue...");
+            Console.ReadLine();
+        }
+
+        private void Login()
+        {
+            Console.WriteLine("===== User Login =====");
+
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
+
+            Console.Write("Password: ");
+            string password = Console.ReadLine();
+
+            var user = _context.Users.FirstOrDefault(u =>
+                u.Email == email && u.Password == password);
+
+            if (user == null)
+            {
+                Console.WriteLine("Invalid email or password.");
+                return;
+            }
+
+            Console.WriteLine($"Welcome, {user.Name}! You are logged in.");
+        }
+
         private void AddBook() { }
         private void BorrowBook() { }
         private void ReturnBook() { }
