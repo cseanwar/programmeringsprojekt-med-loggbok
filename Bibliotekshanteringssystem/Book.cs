@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibliotekshanteringssystem
+namespace LibraryManagement.Models
 {
     public class Book
     {
@@ -15,3 +15,4 @@ namespace Bibliotekshanteringssystem
         public bool IsAvailable { get; set; } = true;
     }
 }
+
