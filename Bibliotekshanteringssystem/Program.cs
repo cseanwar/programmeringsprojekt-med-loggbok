@@ -1,30 +1,28 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+﻿using LibraryManagement;
 using LibraryManagement.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 class Program
 {
     static void Main(string[] args)
     {
-        // Load appsettings.json
         IConfiguration config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .Build();
 
-        // Dependency Injection container
         var services = new ServiceCollection();
 
         services.AddDbContext<LibraryContext>(options =>
             options.UseSqlServer(config.GetConnectionString("LibraryDb"))
         );
 
+        services.AddTransient<MainMenu>();
+
         var provider = services.BuildServiceProvider();
 
-        using (var context = provider.GetRequiredService<LibraryContext>())
-        {
-            Console.WriteLine("Connected to BibliotekDatabase successfully!");
-        }
+        var menu = provider.GetRequiredService<MainMenu>();
+        menu.Show(); 
     }
 }
-

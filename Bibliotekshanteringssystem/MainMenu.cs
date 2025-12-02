@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Data;
+using LibraryManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement
@@ -60,7 +61,50 @@ namespace LibraryManagement
         }
 
         // TODO: implement methods
-        private void RegisterUser() { }
+        private void RegisterUser()
+        {
+            Console.Clear();
+            Console.WriteLine("===== Register New User =====");
+
+            Console.Write("Enter name: ");
+            string name = Console.ReadLine()?.Trim();
+
+            Console.Write("Enter email: ");
+            string email = Console.ReadLine()?.Trim();
+
+            Console.Write("Enter password: ");
+            string password = Console.ReadLine()?.Trim();
+
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                Console.WriteLine("Name and Email cannot be empty!");
+                Console.ReadKey();
+                return;
+            }
+
+            // Check if user already exists
+            var existingUser = _context.Users.FirstOrDefault(u => u.Email == email);
+
+            if (existingUser != null)
+            {
+                Console.WriteLine("A user with this email already exists.");
+                Console.ReadKey();
+                return;
+            }
+
+            var newUser = new User
+            {
+                Name = name,
+                Email = email
+            };
+
+            _context.Users.Add(newUser);
+            _context.SaveChanges();
+
+            Console.WriteLine("User registered successfully!");
+            Console.ReadKey();
+        }
+
         private void Login() { }
         private void AddBook() { }
         private void BorrowBook() { }
