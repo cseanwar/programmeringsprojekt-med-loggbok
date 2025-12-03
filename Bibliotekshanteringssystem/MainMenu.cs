@@ -1,5 +1,6 @@
 ﻿using LibraryManagement.Data;
 using LibraryManagement.Models;
+using LibraryManagement.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -14,6 +15,14 @@ namespace LibraryManagement
             _context = context;
         }
 
+        private readonly BookService _bookService;
+
+        public MainMenu(LibraryContext context, BookService bookService)
+        {
+            _context = context;
+            _bookService = bookService;
+        }
+
         public void Show()
         {
             while (true)
@@ -24,10 +33,13 @@ namespace LibraryManagement
                 Console.WriteLine("2. View all the User");
                 Console.WriteLine("3. Login");
                 Console.WriteLine("4. Add Book");
-                Console.WriteLine("5. Borrow Book");
-                Console.WriteLine("6. Return Book");
-                Console.WriteLine("7. Search Books");
-                Console.WriteLine("8. Exit");
+                Console.WriteLine("5. View all the Books");
+                Console.WriteLine("6. Update Books");
+                Console.WriteLine("7. Delete a Book");
+                Console.WriteLine("8. Search Books");
+                Console.WriteLine("9. Borrow Book");
+                Console.WriteLine("10. Return Book");
+                Console.WriteLine("11. Exit");
                 Console.Write("Choose an option: ");
 
                 var input = Console.ReadLine();
@@ -47,15 +59,24 @@ namespace LibraryManagement
                         AddBook();
                         break;
                     case "5":
-                        BorrowBook();
+                        ViewBooks();
                         break;
                     case "6":
-                        ReturnBook();
+                        UpdateBook();
                         break;
                     case "7":
-                        SearchBooks();
+                        DeleteBook();
                         break;
                     case "8":
+                        SearchBooks();
+                        break;
+                    case "9":
+                        BorrowBook();
+                        break;
+                    case "10":
+                        ReturnBook();
+                        break;
+                    case "11":
                         return;
                     default:
                         Console.WriteLine("Invalid option. Press any key...");
@@ -169,11 +190,119 @@ namespace LibraryManagement
             Console.ReadKey();
         }
 
+        private void AddBook()
+        {
+            Console.Clear();
+            Console.WriteLine("===== Add New Book =====");
 
-        private void AddBook() { }
+            Console.Write("Enter title: ");
+            string title = Console.ReadLine();
+
+            Console.Write("Enter author: ");
+            string author = Console.ReadLine();
+
+            Console.Write("Enter ISBN: ");
+            string isbn = Console.ReadLine();
+
+            _bookService.AddBook(title, author, isbn);
+
+            Console.WriteLine("Book added successfully!");
+            Console.ReadKey();
+        }
+
+        private void ViewBooks()
+        {
+            Console.Clear();
+            Console.WriteLine("===== All Books =====");
+
+            var books = _bookService.GetAllBooks();
+
+            if (books.Count == 0)
+            {
+                Console.WriteLine("No books available.");
+            }
+            else
+            {
+                foreach (var b in books)
+                {
+                    Console.WriteLine($"ID: {b.Id}, Title: {b.Title}, Author: {b.Author}, ISBN: {b.ISBN}");
+                    Console.WriteLine("-----------------------");
+                }
+            }
+
+            Console.ReadKey();
+        }
+
+        private void SearchBooks()
+        {
+            Console.Clear();
+            Console.WriteLine("===== Search Books =====");
+            Console.Write("Enter keyword: ");
+
+            string keyword = Console.ReadLine();
+            var results = _bookService.SearchBooks(keyword);
+
+            if (results.Count == 0)
+                Console.WriteLine("No matching books found.");
+            else
+            {
+                foreach (var b in results)
+                    Console.WriteLine($"ID: {b.Id}, Title: {b.Title}, Author: {b.Author}, ISBN: {b.ISBN}");
+            }
+
+            Console.ReadKey();
+        }
+
+
+        private void UpdateBook()
+        {
+            Console.Clear();
+            Console.WriteLine("===== Update Book =====");
+
+            Console.Write("Enter Book ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            var book = _bookService.GetBookById(id);
+            if (book == null)
+            {
+                Console.WriteLine("Book not found!");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.Write("New title: ");
+            string title = Console.ReadLine();
+
+            Console.Write("New author: ");
+            string author = Console.ReadLine();
+
+            Console.Write("New ISBN: ");
+            string isbn = Console.ReadLine();
+
+            _bookService.UpdateBook(id, title, author, isbn);
+
+            Console.WriteLine("Book updated successfully!");
+            Console.ReadKey();
+        }
+
+        private void DeleteBook()
+        {
+            Console.Clear();
+            Console.WriteLine("===== Delete Book =====");
+
+            Console.Write("Enter Book ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            if (_bookService.DeleteBook(id))
+                Console.WriteLine("Book deleted successfully.");
+            else
+                Console.WriteLine("Book not found.");
+
+            Console.ReadKey();
+        }
+
         private void BorrowBook() { }
         private void ReturnBook() { }
-        private void SearchBooks() { }
     }
 }
 
