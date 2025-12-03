@@ -38,7 +38,7 @@ namespace LibraryManagement
                         RegisterUser();
                         break;
                     case "2":
-                        ViewUsers();     // ✅ FIXED: call the method
+                        ViewUsers();     
                         break;
                     case "3":
                         Login();
@@ -137,25 +137,38 @@ namespace LibraryManagement
 
         private void Login()
         {
-            Console.WriteLine("===== User Login =====");
+            Console.Clear();
+            Console.WriteLine("===== Login =====");
 
-            Console.Write("Email: ");
+            Console.Write("Enter email: ");
             string email = Console.ReadLine();
 
-            Console.Write("Password: ");
+            Console.Write("Enter password: ");
             string password = Console.ReadLine();
 
-            var user = _context.Users.FirstOrDefault(u =>
-                u.Email == email && u.Password == password);
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
 
             if (user == null)
             {
-                Console.WriteLine("Invalid email or password.");
+                Console.WriteLine("No user found with that email.");
+                Console.WriteLine("Press ENTER to return to the Main Manu...");
+                Console.ReadKey();
                 return;
             }
 
-            Console.WriteLine($"Welcome, {user.Name}! You are logged in.");
+            if (user.Password != password)
+            {
+                Console.WriteLine("Oops! Incorrect password.");
+                Console.WriteLine("Press ENTER to return to the Main Manu...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine($"Login successful! Welcome {user.Name}");
+            Console.WriteLine("Press ENTER to return to the Main Manu...");
+            Console.ReadKey();
         }
+
 
         private void AddBook() { }
         private void BorrowBook() { }
