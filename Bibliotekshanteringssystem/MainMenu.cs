@@ -37,7 +37,7 @@ namespace LibraryManagement
                 Console.WriteLine("10. Borrow Book");
                 Console.WriteLine("11. Return Book");
                 Console.WriteLine("12. Exit");
-                Console.Write("Choose an option: ");
+                Console.Write("\nChoose an option: ");
 
                 var input = Console.ReadLine();
 
@@ -227,7 +227,6 @@ namespace LibraryManagement
             if (books.Count == 0)
             {
                 Console.WriteLine("No books available.");
-                Console.WriteLine("\nPress ENTER to return to the Main Manu...");
             }
             else
             {
@@ -260,6 +259,7 @@ namespace LibraryManagement
                 Console.WriteLine($"{book.Title} by {book.Author} (ISBN: {book.ISBN})");
             }
             Console.WriteLine("\nPress ENTER to return to the Main Manu...");
+            Console.ReadKey();
         }
 
         // Update books
@@ -307,6 +307,7 @@ namespace LibraryManagement
             else
                 Console.WriteLine("\nBook not found.");
             Console.WriteLine("\nPress ENTER to return to the Main Manu...");
+            Console.ReadKey();
         }
 
         // Borrow a book from the library
