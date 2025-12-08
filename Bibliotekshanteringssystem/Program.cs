@@ -17,12 +17,14 @@ class Program
         services.AddDbContext<LibraryContext>(options =>
             options.UseSqlServer(config.GetConnectionString("LibraryDb"))
         );
-        services.AddSingleton<BookService>();
-        services.AddTransient<MainMenu>();
+        services.AddSingleton<BookService>();   // Books in memory (List)
+        services.AddSingleton<LoanService>();   // Loans in memory
+        services.AddScoped<UserService>();      // Users stored in DB
+        services.AddTransient<MainMenu>();      // Main Menu
 
         var provider = services.BuildServiceProvider();
 
         var menu = provider.GetRequiredService<MainMenu>();
-        menu.Show(); 
+        menu.Show();
     }
 }

@@ -1,70 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LibraryManagement.Models;
+﻿using LibraryManagement.Models;
 
 namespace LibraryManagement.Services
 {
     public class BookService
     {
-        private readonly List<Book> _books = new List<Book>();
-        private int _nextId = 1;
+        private List<Book> _books = new List<Book>();
 
-        // Add new book
         public void AddBook(string title, string author, string isbn)
         {
-            var book = new Book
+            _books.Add(new Book
             {
-                Id = _nextId++,
                 Title = title,
                 Author = author,
-                ISBN = isbn
-            };
-
-            _books.Add(book);
+                ISBN = isbn,
+                IsBorrowed = false
+            });
+        }
+        public List<Book> SortByTitle(bool ascending = true)
+        {
+            if (ascending)
+                return _books.OrderBy(b => b.Title).ToList();
+            else
+                return _books.OrderByDescending(b => b.Title).ToList();
         }
 
-        // View all books
         public List<Book> GetAllBooks()
         {
             return _books;
         }
-
-        // Search books by title or author
-        public List<Book> SearchBooks(string keyword)
+        public void ViewBooksInTable(List<Book> books)
         {
-            keyword = keyword.ToLower();
-            return _books.Where(b =>
-                b.Title.ToLower().Contains(keyword) ||
-                b.Author.ToLower().Contains(keyword)
-            ).ToList();
+            if (books == null || books.Count == 0)
+            {
+                Console.WriteLine("No books found.");
+                return;
+            }
+
+            Console.WriteLine("---------------------------------------------------------------------");
+            Console.WriteLine($"{"Title",-30} {"Author",-20} {"ISBN",-15} {"Borrowed"}");
+            Console.WriteLine("---------------------------------------------------------------------");
+
+            foreach (var b in books)
+            {
+                Console.WriteLine($"{b.Title,-30} {b.Author,-20} {b.ISBN,-15} {b.IsBorrowed}");
+            }
+
+            Console.WriteLine("---------------------------------------------------------------------");
         }
 
-        // Find book by ID
-        public Book GetBookById(int id)
+
+        public Book? GetBookByTitle(string title)
         {
-            return _books.FirstOrDefault(b => b.Id == id);
+            return _books.FirstOrDefault(b =>
+                b.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
         }
 
-        // Update book
-        public bool UpdateBook(int id, string title, string author, string isbn)
+        public List<Book> SearchByTitle(string title)
         {
-            var book = GetBookById(id);
-            if (book == null)
-                return false;
+            return _books
+                .Where(b => b.Title.Contains(title, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
 
-            book.Title = title;
+        public void UpdateBook(string oldTitle, string newTitle, string author, string isbn)
+        {
+            var book = GetBookByTitle(oldTitle);
+            if (book == null) return;
+
+            book.Title = newTitle;
             book.Author = author;
             book.ISBN = isbn;
-            return true;
         }
 
-        // Delete book
-        public bool DeleteBook(int id)
+        public bool DeleteBook(string title)
         {
-            var book = GetBookById(id);
-            if (book == null)
-                return false;
+            var book = GetBookByTitle(title);
+            if (book == null) return false;
 
             _books.Remove(book);
             return true;
